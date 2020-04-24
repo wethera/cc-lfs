@@ -1,5 +1,7 @@
 # Azure CycleCloud Lustre
 
+> Note: This repo is a fork with a very small modification to include a toggle that enables/disables the Lustre client siftware installation. All original work and credit to (https://github.com/edwardsp/cyclecloud-lfs)
+
 Lustre is a High Performance Parallel Filesystem typically used for High Performance Computing.  This repository contains an Azure CycleCloud project and templates to create a lustre file system on Azure.
 
 This Lustre filesystem project is designed for scratch data and uses [Lsv2](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-storage#lsv2-series) virtual machines that have local NVME disks.  All the NVME disks in the virtual machine will be combined in a RAID 0 and used as the OST.  The MDS virtual machine is also used as an OSS where the local SSD is used for the MDT.  Please consider the [network throughput](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-storage#lsv2-series) when choosing the VM type as the bottleneck for this setup is the network.  For this reason it is not advisable to go any larger than the L32s_v2 for the MDS/OSS.
@@ -22,7 +24,7 @@ The Lustre versions that are currently supported are `2.10` and `2.12`.  Make su
 Below are instructions to check out the project from github and add the lfs project and template:
 
 ```
-git clone https://github.com/edwardsp/cyclecloud-lfs.git
+git clone https://github.com/wethera/cyclecloud-lfs.git
 cd cyclecloud-lfs
 cyclecloud project upload <container>
 cyclecloud import_template -f templates/lfs.txt
@@ -44,6 +46,7 @@ The node types only need the following additions:
 
 ```
 [[[configuration]]]
+lustre.enabled = $LustreEnabled
 lustre.cluster_name = $LustreClusterName
 lustre.version = $LustreVersion
 lustre.mount_point = $LustreMountPoint
@@ -51,17 +54,23 @@ lustre.mount_point = $LustreMountPoint
 [[[cluster-init lfs:client]]]
 ```
 
-These variables (`LustreClusterName`, `LustreVersion` and `LustreMountPoint`) can be parameterized and given an additional `Lustre Setttings` configuration section by appending the following to the template:
+These variables (`LustreEnabled`, `LustreClusterName`, `LustreVersion` and `LustreMountPoint`) can be parameterized and given an additional `Lustre Setttings` configuration section by appending the following to the template:
 
 ```
 [parameters Lustre Settings]
 Order = 25
 Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre cluster"
+    [[parameter LustreEnabled]]
+    Label = Lustre Enable Switch
+    ParameterType = StringList
+    Config.Label = Dropdown to enable or disable HPC Cache mount
+    Config.Plugin = pico.form.Dropdown
+    Config.Entries := {[Label="Enabled"; Value="Enabled"], [Label="Disabled"; Value="Disabled"]}
+    DefaultValue = Disabled
 
     [[parameter LustreClusterName]]
     Label = Lustre Cluster
     Description = Name of the Lustre cluster to connect to. This cluster should be orchestrated by the same CycleCloud Server
-    Required = True
     Config.Plugin = pico.form.QueryDropdown
     Config.Query = select ClusterName as Name from Cloud.Node where Cluster().IsTemplate =!= True && ClusterInitSpecs["lfs:default"] isnt undefined
     Config.SetDefault = false

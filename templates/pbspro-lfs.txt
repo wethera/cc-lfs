@@ -205,7 +205,7 @@ Description = "Use a Lustre cluster as a NAS. Settings for defining the Lustre c
     [[parameter LustreEnabled]]
     Label = Lustre Enable Switch
     ParameterType = StringList
-    Config.Label = Dropdown to enable or disable HPC Cache mount
+    Config.Label = Dropdown to enable or disable Lustre client
     Config.Plugin = pico.form.Dropdown
     Config.Entries := {[Label="Enabled"; Value="Enabled"], [Label="Disabled"; Value="Disabled"]}
     DefaultValue = Disabled

@@ -1,6 +1,6 @@
 # Azure CycleCloud Lustre
 
-> Note: This repo is a fork with a very small modification to include a toggle that enables/disables the Lustre client siftware installation. All original work and credit to (https://github.com/edwardsp/cyclecloud-lfs)
+> Note: This repo is a fork with a very small modification to include a toggle that enables/disables the Lustre client software installation. All original work and credit to (https://github.com/edwardsp/cyclecloud-lfs)
 
 Lustre is a High Performance Parallel Filesystem typically used for High Performance Computing.  This repository contains an Azure CycleCloud project and templates to create a lustre file system on Azure.
 

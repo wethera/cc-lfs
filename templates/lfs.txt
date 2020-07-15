@@ -135,7 +135,9 @@ Order = 20
         ParameterType = Cloud.Image
         Config.OS = linux
         #DefaultValue = cycle.image.centos7
-        DefaultValue = OpenLogic:CentOS:7.7:latest
+        #DefaultValue = OpenLogic:CentOS:7.7:latest
+        DefaultValue = OpenLogic:CentOS:7.7:7.7.201912090
+
         Config.Filter := Package === "cycle.image.centos7"
 
     [[parameters Advanced Networking]]
